@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEA AstroSearch</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(to bottom,#001f2f,#000814);
+    color:white;
+    text-align:center;
+}
+h1{
+    color:cyan;
+}
+input{
+    width:70%;
+    padding:12px;
+    border-radius:20px;
+    border:none;
+    margin-top:20px;
+}
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:20px;
+    background:cyan;
+    font-weight:bold;
+    margin-top:10px;
+    cursor:pointer;
+}
+.card{
+    margin:20px auto;
+    width:80%;
+    background:#012a4a;
+    padding:15px;
+    border-radius:15px;
+}
+img{
+    width:200px;
+    border-radius:10px;
+}
+</style>
+</head>
+<body>
+
+<h1>TEA AstroSearch</h1>
+
+<input type="text" id="searchInput" placeholder="Cari objek astronomi...">
+<br>
+<button onclick="searchObject()">Search</button>
+
+<div id="result"></div>
+
+<script>
+
+const objects = [
+{ name:"Matahari", desc:"Bintang pusat tata surya yang menjadi sumber energi utama Bumi.", img:"https://upload.wikimedia.org/wikipedia/commons/c/c3/Solar_sys8.jpg"},
+{ name:"Merkurius", desc:"Planet terdekat dari Matahari dan terkecil di tata surya.", img:"https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg"},
+{ name:"Venus", desc:"Planet kedua dari Matahari dengan atmosfer sangat tebal.", img:"https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg"},
+{ name:"Bumi", desc:"Planet tempat kehidupan diketahui ada.", img:"https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg"},
+{ name:"Mars", desc:"Planet merah yang sering diteliti untuk kemungkinan kehidupan.", img:"https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg"},
+{ name:"Jupiter", desc:"Planet terbesar di tata surya dengan Bintik Merah Besar.", img:"https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg"},
+{ name:"Saturnus", desc:"Planet bercincin paling terkenal.", img:"https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg"},
+{ name:"Uranus", desc:"Planet es raksasa dengan rotasi unik.", img:"https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg"},
+{ name:"Neptunus", desc:"Planet terjauh di tata surya dengan angin tercepat.", img:"https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg"},
+{ name:"Pluto", desc:"Planet kerdil di Sabuk Kuiper.", img:"https://upload.wikimedia.org/wikipedia/commons/2/2a/Nh-pluto-in-true-color_2x_JPEG-edit-frame.jpg"},
+{ name:"Bulan", desc:"Satelit alami Bumi.", img:"https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg"},
+{ name:"Andromeda", desc:"Galaksi tetangga terbesar Bima Sakti.", img:"https://upload.wikimedia.org/wikipedia/commons/a/a4/Andromeda_Galaxy_(with_h-alpha).jpg"},
+{ name:"Bima Sakti", desc:"Galaksi tempat tata surya berada.", img:"https://upload.wikimedia.org/wikipedia/commons/6/6f/Milky_Way_Arch.jpg"},
+{ name:"Betelgeuse", desc:"Bintang raksasa merah di rasi Orion.", img:"https://upload.wikimedia.org/wikipedia/commons/5/57/Betelgeuse_star.jpg"},
+{ name:"Sirius", desc:"Bintang paling terang di langit malam.", img:"https://upload.wikimedia.org/wikipedia/commons/5/56/Sirius_A_and_B_Hubble_photo.jpg"},
+{ name:"Proxima Centauri", desc:"Bintang terdekat dari Matahari.", img:"https://upload.wikimedia.org/wikipedia/commons/9/95/Proxima_Centauri_by_ESO.jpg"},
+{ name:"TON 618", desc:"Quasar dengan lubang hitam supermasif raksasa.", img:"https://upload.wikimedia.org/wikipedia/commons/3/3f/Artist%27s_impression_of_a_quasar.jpg"},
+{ name:"Sagittarius A*", desc:"Lubang hitam di pusat galaksi Bima Sakti.", img:"https://upload.wikimedia.org/wikipedia/commons/5/5f/Black_hole_-_Messier_87_crop_max_res.jpg"},
+{ name:"Nebula Orion", desc:"Awan gas tempat kelahiran bintang.", img:"https://upload.wikimedia.org/wikipedia/commons/d/d4/Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg"},
+{ name:"Crab Nebula", desc:"Sisa ledakan supernova tahun 1054.", img:"https://upload.wikimedia.org/wikipedia/commons/0/00/Crab_Nebula.jpg"},
+{ name:"Halley", desc:"Komet yang muncul setiap 76 tahun.", img:"https://upload.wikimedia.org/wikipedia/commons/2/2e/Halley%27s_Comet_-_1986.jpg"},
+{ name:"Asteroid Belt", desc:"Wilayah penuh asteroid antara Mars dan Jupiter.", img:"https://upload.wikimedia.org/wikipedia/commons/6/6c/Asteroid_Belt.jpg"},
+{ name:"Dark Matter", desc:"Materi tak terlihat yang mempengaruhi gravitasi galaksi.", img:"https://upload.wikimedia.org/wikipedia/commons/4/4c/Dark_matter_map.jpg"},
+{ name:"Dark Energy", desc:"Energi misterius penyebab percepatan ekspansi alam semesta.", img:"https://upload.wikimedia.org/wikipedia/commons/3/3e/Expansion_of_the_universe.png"},
+{ name:"Exoplanet", desc:"Planet yang berada di luar tata surya.", img:"https://upload.wikimedia.org/wikipedia/commons/2/2d/Exoplanet_Comparison.png"},
+{ name:"Supernova", desc:"Ledakan dahsyat akhir kehidupan bintang besar.", img:"https://upload.wikimedia.org/wikipedia/commons/4/4f/SN1994D.jpg"},
+{ name:"Pulsar", desc:"Bintang neutron yang memancarkan radiasi periodik.", img:"https://upload.wikimedia.org/wikipedia/commons/8/8f/Pulsar_schematic.jpg"},
+{ name:"Quasar", desc:"Inti galaksi aktif yang sangat terang.", img:"https://upload.wikimedia.org/wikipedia/commons/3/3f/Artist%27s_impression_of_a_quasar.jpg"},
+{ name:"ISS", desc:"Stasiun luar angkasa internasional.", img:"https://upload.wikimedia.org/wikipedia/commons/d/d0/ISS-65_Soyuz_MS-18.jpg"},
+{ name:"Voyager 1", desc:"Wahana luar angkasa yang telah keluar dari tata surya.", img:"https://upload.wikimedia.org/wikipedia/commons/d/d7/Voyager_spacecraft_model.png"}
+];
+
+function searchObject(){
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const result = document.getElementById("result");
+    result.innerHTML = "";
+
+    if(input === "owner tea") return result.innerHTML="<h2>him</h2>";
+    if(input === "wakil owner tea") return result.innerHTML="<h2>science</h2>";
+    if(input === "co owner tea") return result.innerHTML="<h2>dyel</h2>";
+    if(input === "vice owner tea") return result.innerHTML="<h2>razeerh</h2>";
+
+    const found = objects.filter(obj => obj.name.toLowerCase().includes(input));
+
+    if(found.length === 0){
+        result.innerHTML="<p>Objek tidak ditemukan.</p>";
+        return;
+    }
+
+    found.forEach(obj=>{
+        result.innerHTML += `
+        <div class="card">
+            <h2>${obj.name}</h2>
+            <img src="${obj.img}">
+            <p>${obj.desc}</p>
+        </div>
+        `;
+    });
+}
+
+</script>
+
+</body>
+</html>
